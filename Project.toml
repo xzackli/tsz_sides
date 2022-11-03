@@ -1,0 +1,8 @@
+[deps]
+Cosmology = "76746363-e552-5dba-9a5a-cef6fa9cc5ab"
+HDF5 = "f67ccb44-e63f-5c2f-98bd-6dc0ccc4ba2f"
+Interpolations = "a98d9a8b-a2ab-59e6-89dd-64a1c18fca59"
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+Pixell = "d4cbf8b2-a14f-4080-9f5e-d5a64ada768e"
+WCS = "15f3aee2-9e10-537f-b834-a6fb8bdb944d"
+XGPaint = "af630e4a-6754-4ec2-ab8a-f9f8b9ebafbf"
