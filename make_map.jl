@@ -4,6 +4,7 @@ using Interpolations
 import XGPaint: AbstractProfile
 using HDF5
 import JSON
+using JLD2
 
 print("Threads: ", Threads.nthreads(), "\n")
 
@@ -42,8 +43,20 @@ p = XGPaint.BattagliaProfile()
 N_logθ = 512
 rft = RadialFourierTransform(n=N_logθ, pad=256)
 
-logθ_min, logθ_max = log(minimum(rft.r)), log(maximum(rft.r))
-@time prof_logθs, prof_redshift, prof_logMs, prof_y = profile_grid(p; N_logθ=N_logθ, logθ_min=logθ_min, logθ_max=logθ_max)
+model_file::String = "cached_battaglia.jld2"
+if isfile(model_file)
+    print("Found cached Battaglia profile model. Loading from disk.\n")
+    model = load(model_file)
+    prof_logθs, prof_redshift, prof_logMs, prof_y = model["prof_logθs"], 
+        model["prof_redshift"], model["prof_logMs"], model["prof_y"]
+else
+    print("Didn't find a cached profile model. Computing and saving.\n")
+    logθ_min, logθ_max = log(minimum(rft.r)), log(maximum(rft.r))
+    @time prof_logθs, prof_redshift, prof_logMs, prof_y = profile_grid(p; 
+        N_logθ=N_logθ, logθ_min=logθ_min, logθ_max=logθ_max)
+    save(model_file, Dict("prof_logθs"=>prof_logθs, 
+        "prof_redshift"=>prof_redshift, "prof_logMs"=>prof_logMs, "prof_y"=>prof_y))
+end
 
 cosmo = get_cosmology(h=0.7, OmegaM=0.25)
 
