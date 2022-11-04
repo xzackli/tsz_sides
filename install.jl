@@ -1,4 +1,4 @@
-using Pkg
+using Pkg, Downloads
 
 Pkg.pkg"add WCS HDF5 Interpolations Cosmology JSON JLD2"
 Pkg.pkg"add https://github.com/simonsobs/Pixell.jl.git"
