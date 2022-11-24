@@ -5,13 +5,14 @@ import XGPaint: AbstractProfile
 using HDF5
 import JSON
 using JLD2
+using ThreadsX
 
 print("Threads: ", Threads.nthreads(), "\n")
 
 stringdata=join(readlines("wcs.json"))
 wcsdict=JSON.parse(stringdata)
 
-# In Python everything is backwards, except I am the WCS from the Fortran
+# In Python the shapes are backwards
 shape = Int.((wcsdict["shape"][2], wcsdict["shape"][1]))
 cdelt = Float64.((wcsdict["cdelt"][1], wcsdict["cdelt"][2]))
 crpix = Float64.((wcsdict["crpix"][1], wcsdict["crpix"][2]))
@@ -30,6 +31,13 @@ fid = h5open("little_box.h5", "r")
 ra, dec = deg2rad.(fid["ra"]), deg2rad.(fid["dec"])
 redshift = collect(fid["redshift"])
 halo_mass = collect(fid["halo_mass"])
+
+##
+perm = sortperm(dec, alg=ThreadsX.MergeSort)
+ra = ra[perm]
+dec = dec[perm]
+redshift = redshift[perm]
+halo_mass = halo_mass[perm]
 
 # precomputed sky angles
 α_map, δ_map = posmap(shape, wcs)
