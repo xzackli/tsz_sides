@@ -10,7 +10,9 @@ print("Threads: ", Threads.nthreads(), "\n")
 
 stringdata=join(readlines("wcs.json"))
 wcsdict=JSON.parse(stringdata)
-shape = Int.((wcsdict["shape"][1], wcsdict["shape"][2]))
+
+# In Python everything is backwards, except I am the WCS from the Fortran
+shape = Int.((wcsdict["shape"][2], wcsdict["shape"][1]))
 cdelt = Float64.((wcsdict["cdelt"][1], wcsdict["cdelt"][2]))
 crpix = Float64.((wcsdict["crpix"][1], wcsdict["crpix"][2]))
 crval = Float64.((wcsdict["crval"][1], wcsdict["crval"][2]))
@@ -64,8 +66,8 @@ itp = Interpolations.interpolate(log.(prof_y), BSpline(Cubic(Line(OnGrid()))))
 sitp = scale(itp, prof_logθs, prof_redshift, prof_logMs);
 
 ##
-function paint_map!(m, p, psa, sitp, masses, redshifts, αs, δs)
-    for i in axes(masses, 1)
+function paint_map!(m, p, psa, sitp, masses, redshifts, αs, δs, irange)
+    for i in irange
         α₀ = αs[i]
         δ₀ = δs[i]
         Ms = masses[i]
@@ -74,10 +76,30 @@ function paint_map!(m, p, psa, sitp, masses, redshifts, αs, δs)
     end
 end
 
+function chunked_paint!(m, p, psa, sitp, masses, redshifts, αs, δs)
+    m .= 0.0
+    
+    N_sources = length(masses)
+    chunksize = ceil(Int, N_sources / (2Threads.nthreads()))
+    chunks = chunk(N_sources, chunksize);
+    
+    Threads.@threads for i in 1:Threads.nthreads()
+        chunk_i = 2i
+        i1, i2 = chunks[chunk_i]
+        paint_map!(m, p, psa, sitp, masses, redshifts, αs, δs, i1:i2)
+    end
+
+    Threads.@threads for i in 1:Threads.nthreads()
+        chunk_i = 2i - 1
+        i1, i2 = chunks[chunk_i]
+        paint_map!(m, p, psa, sitp, masses, redshifts, αs, δs, i1:i2)
+    end
+end
+
 m = Enmap(zeros(shape), wcs)
 
 print("Painting map.\n")
-@time paint_map!(m, p, psa, sitp, halo_mass, redshift, ra, dec)
+@time chunked_paint!(m, p, psa, sitp, halo_mass, redshift, ra, dec)
 
 ##
 write_map(

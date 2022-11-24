@@ -70,7 +70,7 @@ cat = {
     "dec": np.array(f["dec"])
 }
 
-c = set_wcs_map(cat, 30)  # 30 arcseconds
+c = set_wcs_map(cat, 5)  # 30 arcseconds
 
 wcs_info = {
     'cdelt': (c['w'].wcs.cdelt[0], c['w'].wcs.cdelt[1]),
