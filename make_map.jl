@@ -39,7 +39,7 @@ psa = (sin_α=sin.(α_map), cos_α=cos.(α_map), sin_δ=sin.(δ_map), cos_δ=cos
 print("Precomputing the model profile grid.\n")
 
 # set up a profile to paint
-p = XGPaint.BattagliaProfile()
+p = XGPaint.BattagliaProfile(Omega_c=0.2589, Omega_b=0.0486, h=0.6774)
 
 # beam stuff (not used in this particular script)
 N_logθ = 512
@@ -60,7 +60,6 @@ else
         "prof_redshift"=>prof_redshift, "prof_logMs"=>prof_logMs, "prof_y"=>prof_y))
 end
 
-cosmo = get_cosmology(h=0.7, OmegaM=0.25)
 
 itp = Interpolations.interpolate(log.(prof_y), BSpline(Cubic(Line(OnGrid()))))
 sitp = scale(itp, prof_logθs, prof_redshift, prof_logMs);
