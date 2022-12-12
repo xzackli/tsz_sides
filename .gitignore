@@ -1,3 +1,4 @@
 *.h5
 *.jld2
 Manifest.toml
+*.fits
