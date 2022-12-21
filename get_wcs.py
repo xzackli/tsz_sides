@@ -62,7 +62,9 @@ def set_wcs_map(cat, pixel_size):
 
 # %%  CHANGE ME
 
-f = h5py.File('little_box.h5', 'r')
+abhi_file = 'fullcatalog_data_pidminus1_gzipped.h5'
+websky_file = 'little_box.h5'
+f = h5py.File(abhi_file, 'r')
 
 cat = {
     "halo_mass": np.array(f["halo_mass"]),
@@ -83,3 +85,5 @@ import json
 with open('wcs.json', 'w') as fp:
     json.dump(wcs_info, fp)
 
+
+# %%
