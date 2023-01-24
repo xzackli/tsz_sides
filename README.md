@@ -1,5 +1,7 @@
 # tSZ on SIDES
 
+This is mostly a Julia script to call the [XGPaint.jl](https://github.com/xzackli/XGPaint.jl) package.
+
 1. To install packages, run `julia install.jl`
 2. Use `get_wcs.py` to configure a pixel map size and WCS information. This writes `wcs.json`.
 3. Unzip some halos with `little_box.zip`.
