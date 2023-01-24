@@ -1,4 +1,4 @@
-# for_abhi
+# tSZ on SIDES
 
 1. To install packages, run `julia install.jl`
 2. Use `get_wcs.py` to configure a pixel map size and WCS information. This writes `wcs.json`.
