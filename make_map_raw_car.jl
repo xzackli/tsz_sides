@@ -15,7 +15,7 @@ box = [30   -30;           # RA
 shape, wcs = geometry(CarClenshawCurtis{Float64}, box, 0.5 * Pixell.arcminute)
 
 ##
-fid = h5open("/home/zack/sandbox/tsz_LIM_paper/big_box_m200c_v3.h5", "r")
+fid = h5open("/fs/lustre/cita/zack/projects/websky/big_box_m200c_v3.h5", "r")
 ra, dec = deg2rad.(fid["ra"]), deg2rad.(fid["dec"])
 redshift = collect(fid["redshift"])
 halo_mass = collect(fid["halo_mass"])
